@@ -13,6 +13,8 @@ with open('list.txt','r',encoding='utf-8') as file:
 #从list文档中匹配到所有商品分类
 url_list=re.findall('list.jd.com/list.html\?cat\=\d+.\d+.\d+', result)
 
+url_list=set(url_list)
+
 #定义四级分类
 type_one_list=[]
 type_two_list=[]
@@ -30,11 +32,14 @@ for url in url_list:
 		type_one=soup.find('a',{'class':'crumbs-link'}).get_text()
 		type_two=soup.find('span',{'class':'curr'}).get_text()
 		type_three=soup.find_all('span',{'class':'curr'})[1].get_text()
-		type_four_div=soup.find_all('div',{'class':'J_selectorLine s-line J_selectorFold'})
+		type_four_div=soup.find('div',{'id':'J_selector'}).find_all('div')
 
 
 		for html in type_four_div:
-			type_four=html.find('div',{'class':'sl-wrap'}).find('div',{'class':'sl-key'}).find('span').get_text().replace('：','').replace(' ','')
+			try:
+				type_four=html.find('div',{'class':'sl-wrap'}).find('div',{'class':'sl-key'}).find('span').get_text().replace('：','').replace(' ','')
+			except:
+				continue
 			type_one_list.append(type_one.replace(' ',''))
 			type_two_list.append(type_two.replace(' ',''))
 			type_three_list.append(type_three.replace(' ',''))
