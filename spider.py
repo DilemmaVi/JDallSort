@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import lxml
 import pandas as pd
 import time
+import json
 
 
 #打开list文档(文档内容是从京东全部商品分类：https://www.jd.com/allSort.aspx，中获取到的)
@@ -32,19 +33,37 @@ for url in url_list:
 		type_one=soup.find('a',{'class':'crumbs-link'}).get_text()
 		type_two=soup.find('span',{'class':'curr'}).get_text()
 		type_three=soup.find_all('span',{'class':'curr'})[1].get_text()
-		type_four_div=soup.find('div',{'id':'J_selector'}).find_all('div')
+		type_four_div=soup.find('div',{'id':'J_selector'}).find_all('div',{'class':'sl-key'})
 
+		#获取隐藏的四级分类list
+		try:
+			type_four_exts=[]
+			type_four_exts=json.loads(re.findall('other_exts \=(\[.*\]);', str(soup))[0])
+		except:
+			pass
 
 		for html in type_four_div:
 			try:
-				type_four=html.find('div',{'class':'sl-wrap'}).find('div',{'class':'sl-key'}).find('span').get_text().replace('：','').replace(' ','')
-			except:
+				#type_four=html.find('div',{'class':'sl-wrap'}).find('div',{'class':'sl-key'}).find('span').get_text().replace('：','').replace(' ','')
+				type_four=html.find('span').get_text().replace('：','').replace(' ','')
+			except Exception as e :
+				print(e)
 				continue
 			type_one_list.append(type_one.replace(' ',''))
 			type_two_list.append(type_two.replace(' ',''))
 			type_three_list.append(type_three.replace(' ',''))
 			type_four_list.append(type_four.replace(' ',''))
 			print(type_one.replace(' ','')+"-"+type_two.replace(' ','')+"-"+type_three.replace(' ','')+"-"+type_four.replace(' ',''))
+		
+		#遍历获取隐藏的四级分类
+		if type_four_exts:
+			for ext in type_four_exts:
+				type_four=ext['name']
+				type_one_list.append(type_one.replace(' ',''))
+				type_two_list.append(type_two.replace(' ',''))
+				type_three_list.append(type_three.replace(' ',''))
+				type_four_list.append(type_four.replace(' ',''))
+				print(type_one.replace(' ','')+"-"+type_two.replace(' ','')+"-"+type_three.replace(' ','')+"-"+type_four.replace(' ',''))						
 	except Exception as e:
 		print(e)
 		#异常捕获，记录出错url，待程序结束后统一处理
