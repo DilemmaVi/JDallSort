@@ -7,7 +7,7 @@ import time
 import json
 
 
-#打开list文档(文档内容是从京东全部商品分类：https://www.jd.com/allSort.aspx，中获取到的)
+#打开list文档(文档内容是从京东全部商品分类：https://www.jd.com/allSort.aspx，中获取到的网页源码)
 with open('list.txt','r',encoding='utf-8') as file:
 	result=file.read()
 
@@ -42,9 +42,9 @@ for url in url_list:
 		except:
 			pass
 
+		#遍历获取正常的四级分类
 		for html in type_four_div:
 			try:
-				#type_four=html.find('div',{'class':'sl-wrap'}).find('div',{'class':'sl-key'}).find('span').get_text().replace('：','').replace(' ','')
 				type_four=html.find('span').get_text().replace('：','').replace(' ','')
 			except Exception as e :
 				print(e)
@@ -71,7 +71,7 @@ for url in url_list:
 			file.write(url+'\n')
 		time.sleep(3)
 
-#使用pandas储存数据导入为excel
+#使用pandas储存数据，导出文件为excel，后缀格式为xlsx
 df=pd.DataFrame({'一级分类':type_one_list,'二级分类':type_two_list,'三级分类':type_three_list,'四级分类':type_four_list})
 df.to_excel('result.xlsx')
 	
