@@ -1,6 +1,6 @@
 # 获取京东商品四级分类的小爬虫，使用python3实现
 
-## 1.首先从(https://www.jd.com/allSort.aspx)这个网站解析到所有第三级分类的链接，我已经获取好放在list里面
+## 1.首先从京东的全部商品分类网站[点击跳转](https://www.jd.com/allSort.aspx)解析到所有第三级分类的链接，我已经获取好放在list里面
 
 ## 2.安装python3和依赖库(pip Install -r requirements.txt)
 
